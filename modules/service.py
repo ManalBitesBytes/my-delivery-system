@@ -1,9 +1,11 @@
 
 class Service:
-    def __init__(self, customer_id, status):
+    def __init__(self, customer_id, amount, status):
         self.customer_id = customer_id
         self.status = status
+        self.amount = amount
         self.type = ''
+        self.id = None
 
     def place(self):
         pass

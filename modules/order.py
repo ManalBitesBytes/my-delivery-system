@@ -1,8 +1,8 @@
 from modules.service import Service
 
 class Order(Service):
-    def __init__(self, customer_id, status):
-        super().__init__(customer_id, status)
+    def __init__(self, customer_id,amount, status):
+        super().__init__(customer_id,amount, status)
         self.type = "order"
 
     def place(self):

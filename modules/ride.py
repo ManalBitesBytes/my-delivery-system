@@ -1,8 +1,8 @@
 from modules.service import Service
 
 class Ride(Service):
-    def __init__(self, customer_id, status, pick_up_location, delivery_location):
-        super().__init__(customer_id, status)
+    def __init__(self, customer_id, amount, status, pick_up_location, delivery_location):
+        super().__init__(customer_id,amount, status)
         self.pick_up_location = None
         self.delivery_location = None
 

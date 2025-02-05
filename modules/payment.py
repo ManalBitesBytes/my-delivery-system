@@ -2,11 +2,11 @@ from abc import ABC, abstractmethod
 from modules.service import Service
 
 class Payment(ABC):
-    def __init__(self, service: Service, amount ):
-        self.service_type = service.type
-        #self.service_id = get_service_id()
-        self.amount = amount
+    def __init__(self, service: Service ):
+        self.amount = service.amount
         self.customer_id = service.customer_id
+        self.service_type  = service.type
+        self.service_id = service.id
         method = None
 
     @abstractmethod
