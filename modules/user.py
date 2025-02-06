@@ -9,5 +9,5 @@ class User:
     def update_info(self):
         pass
 
-    def show_info(self):
+    def get_info(self):
         pass

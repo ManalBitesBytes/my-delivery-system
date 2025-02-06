@@ -1,50 +1,57 @@
 import os
-db_username = os.getenv('DB_USERNAME')
-db_password = os.getenv('DB_PASSWORD')
-
 import psycopg2
 from psycopg2 import OperationalError
+
 class DBHelper:
     def __init__(self):
         self.conn = None
         try:
-             self.conn = psycopg2.connect(dbname='delivery',
-                                user=db_username,
-                                password = db_password,
-                                host='localhost',
-                                port='5432'
-                                )
-
+            self.conn = psycopg2.connect(
+                dbname='delivery',
+                user=os.getenv('DB_USERNAME'),
+                password=os.getenv('DB_PASSWORD'),
+                host='localhost',
+                port='5432'
+            )
+            print("Connection established")
         except OperationalError as e:
-             print(f"Error {e} occurred while connecting to PostgreSQL")
+            print(f"Error {e} occurred while connecting to PostgreSQL")
 
     def get(self, query, params=None):
+        cursor = None
         """
-        Handles SELECT queries, fetches data and returns a list of results.
+        Executes a SELECT query and returns the results.
         """
         try:
             cursor = self.conn.cursor()
-            if params:
-                cursor.execute(query, params)
-            else:
-                cursor.execute(query)
+
+            # Execute the query with or without parameters
+
+            cursor.execute(query, params)
+
 
             # Fetch results for SELECT query
             result = cursor.fetchall()
+            cursor.close()
+
             return result
 
         except Exception as e:
             print(f"Error executing SELECT query: {e}")
             return []
         finally:
-            cursor.close()
+          if cursor:
+                cursor.close()
 
     def set(self, query, params=None):
+        cursor = None
         """
-        Handles INSERT, UPDATE, DELETE queries, executes them and returns the number of rows affected.
+        Executes INSERT, UPDATE, DELETE queries and commits the changes.
         """
         try:
             cursor = self.conn.cursor()
+
+            # Execute the query with or without parameters
             if params:
                 cursor.execute(query, params)
             else:
@@ -53,7 +60,6 @@ class DBHelper:
             # Commit the changes (for INSERT, UPDATE, DELETE queries)
             self.conn.commit()
 
-            # Return the number of rows affected (e.g., for UPDATE or INSERT queries)
             return cursor.rowcount
 
         except Exception as e:
@@ -61,4 +67,5 @@ class DBHelper:
             self.conn.rollback()  # Rollback if there's an error
             return 0
         finally:
-            cursor.close()
+            if cursor:
+                cursor.close()
