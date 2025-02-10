@@ -23,10 +23,22 @@ class DriverRepo:
         return pd.DataFrame(driver_info, columns=['name', 'phone', 'car_number', 'availability'])
 
     def set_driver_availability(self, driver_id, availability):
-        if availability not in [0, 1]:
-            print("Invalid availability status. Must be 0 or 1.")
-            return 0
-        else:
             query = "UPDATE drivers SET availability = %s WHERE driver_id = %s"
-
             self.db_helper.set(query, (availability, driver_id))
+
+    def get_available_driver(self):
+        query = "SELECT driver_id FROM drivers WHERE availability = 1"
+        available_driver = self.db_helper.get(query)
+
+        return available_driver[0]
+
+    def assign_to_driver(self, driver_id, service_type, service_id):
+        query = "INSERT INTO driver_assignment (driver_id, service_type, service_id) VALUES (%s, %s, %s)"
+        self.db_helper.set(query, (driver_id, service_type, service_id))
+
+    def get_driver_history(self, driver_id):
+        query = "SELECT driver_id, service_type, service_id FROM driver_assignment WHERE driver_id = %s"
+        driver_history = self.db_helper.get(query, (driver_id,))
+        return pd.DataFrame(driver_history, columns=['driver_id', 'service_type', 'service_id'])
+
+

@@ -6,8 +6,8 @@ class Order_Module():
         self.order_repo = OrderRepo(db_helper)
 
 
-    def place(self, customer_id, amount):
-        self.order_repo.add(customer_id, amount)
+    def add(self, customer_id):
+        self.order_repo.add(customer_id)
 
 
     def update_status(self, order_id, status):
@@ -23,5 +23,5 @@ class Order_Module():
     def complete(self):
         pass
 
-    def show_info(self):
-        pass
+    def show_info(self, order_id):
+        return  self.order_repo.show_info(order_id)

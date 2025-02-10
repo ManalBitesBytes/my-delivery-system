@@ -26,3 +26,18 @@ class CustomerRepo:
         query = "SELECT name, phone, address from customers WHERE customer_id = %s"
         customer_info = self.db_helper.get( query, (customer_id,))
         return pd.DataFrame(customer_info, columns=['name', 'phone', 'address'])
+
+    def get_customer_orders(self, customer_id):
+        query = "SELECT order_id, status FROM orders WHERE customer_id = %s"
+        orders = self.db_helper.get(query, (customer_id,))
+        return pd.DataFrame(orders, columns=['order_id', 'status'])
+
+    def get_customer_rides(self, customer_id):
+        query = "SELECT ride_id, status, pick_up_location, drop_of_location FROM rides where ride_id = %s"
+        orders = self.db_helper.get(query, (customer_id,))
+        return pd.DataFrame(orders, columns=['ride_id', 'status', 'pick_up_location', 'drop_of_location'])
+
+    def get_customer_payments(self, customer_id):
+        query = "SELECT payment_id, service_type, amount FROM payment WHERE customer_id = %s"
+        payments = self.db_helper.get(query, (customer_id,))
+        return pd.DataFrame(payments, columns=['payment_id', 'service_type', 'amount'])

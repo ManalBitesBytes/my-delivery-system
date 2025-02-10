@@ -36,7 +36,6 @@ ALTER TABLE public.orders ADD CONSTRAINT orders_customer_id_fkey FOREIGN KEY (cu
 CREATE TABLE public.rides (
 	ride_id bigserial NOT NULL,
 	customer_id int4 NULL,
-	amount numeric(10, 2) NOT NULL,
 	pick_up_location varchar(100) NOT NULL,
 	drop_off_location varchar(100) NOT NULL,
 	status varchar(50) DEFAULT 'requested'::character varying NULL,

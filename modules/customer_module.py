@@ -12,8 +12,6 @@ class CustomerModule:
     def update_info(self, name, phone, address):
          self.customer_repo.update_customer(name, phone, address)
 
-    def add_payment(self):
-         pass
 
 
     def get_id(self, phone):
@@ -27,5 +25,17 @@ class CustomerModule:
     def get_info(self,  customer_id):
             result = self.customer_repo.get_customer_info(customer_id)
             return result
+
+    def get_customer_orders(self, customer_id):
+        result = self.customer_repo.get_customer_orders(customer_id)
+        return result
+
+    def get_customer_rides(self, customer_id):
+        result = self.customer_repo.get_customer_rides(customer_id)
+        return result
+
+    def get_customer_payments(self, customer_id):
+        result = self.customer_repo.get_customer_payments(customer_id)
+        return result
 
 

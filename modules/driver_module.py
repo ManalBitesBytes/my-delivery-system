@@ -1,4 +1,4 @@
-from modules.user import User
+
 from repositories.driver_repo import DriverRepo
 
 class DriverModule:
@@ -21,6 +21,21 @@ class DriverModule:
         return result
 
     def set_availability(self, driver_id, is_available):
-        self.driver_repo. set_driver_availability(driver_id, is_available)
+        if is_available not in [0, 1]:
+            print("Invalid availability status. Must be 0 or 1.")
+            return 0
+        else:
+            self.driver_repo. set_driver_availability(driver_id, is_available)
 
+    def get_available_driver(self):
+       return self.driver_repo.get_available_driver()
+
+    def assign_to_driver(self, service_type, service_id):
+        driver_id = self.get_available_driver()
+        driver_id = driver_id
+        self.driver_repo.assign_to_driver(driver_id, service_type, service_id)
+        self.set_availability(driver_id, 0)
+
+    def get_driver_history(self, driver_id):
+        return self.driver_repo.get_driver_history(driver_id)
 
