@@ -62,7 +62,7 @@ def display_payment_menu():
 
 
 def main():
-    db_type = os.getenv("DB_TYPE", "POSTGRES")
+    db_type = os.getenv("DB_TYPE")
 
     # Initialize the appropriate database helper based on the environment variable
     if db_type == 'POSTGRES':
@@ -72,15 +72,28 @@ def main():
             os.getenv('POSTGRES_USERNAME'),
             os.getenv('POSTGRES_PASSWORD')
         )
+
+        # Initialize modules with the DB helper
+        customer_module = CustomerModule(postgres_helper)
+        driver_module = DriverModule(postgres_helper)
+        order_module = Order_Module(postgres_helper)
+        ride_module = RideModule(postgres_helper)
+        payment_module = PaymentModule(postgres_helper)
+
+    elif db_type == 'MONGO':
+        mongo_helper = MongoDBHelper(
+            os.getenv('MONGO_HOST'),
+            int(os.getenv('MONGO_PORT')),
+            os.getenv('MONGO_DATABASE')
+        )
+        customer_module = CustomerModule(mongo_helper)
+        driver_module = DriverModule(mongo_helper)
+        order_module = Order_Module(mongo_helper)
+        ride_module = RideModule(mongo_helper)
+        payment_module = PaymentModule(mongo_helper)
+
     else:
         raise ValueError("Unsupported DB Type")
-
-    # Initialize modules with the DB helper
-    customer_module = CustomerModule(postgres_helper)
-    driver_module = DriverModule(postgres_helper)
-    order_module = Order_Module(postgres_helper)
-    ride_module = RideModule(postgres_helper)
-    payment_module = PaymentModule(postgres_helper)
 
     while True:
         # Show the main menu
@@ -99,11 +112,10 @@ def main():
                     address = input("Enter address: ")
                     customer_module.add(name, phone, address)
                 elif customer_choice == "2":
-                    customer_id = input("Enter customer ID: ")
                     name = input("Enter name: ")
                     phone = input("Enter phone: ")
                     address = input("Enter address: ")
-                    customer_module.update_info(customer_id, name, phone, address)
+                    customer_module.update_info( name, phone, address)
                 elif customer_choice == "3":
                     phone = input("Enter phone number: ")
                     customer_info = customer_module.get_info(phone)

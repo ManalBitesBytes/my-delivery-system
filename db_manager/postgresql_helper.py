@@ -1,7 +1,6 @@
 import psycopg2
-from db_manager.database_helper import DatabaseHelper
 
-class PostgreSQLHelper(DatabaseHelper):
+class PostgreSQLHelper():
     def __init__(self, host, database, user, password):
         self.host = host
         self.database = database
