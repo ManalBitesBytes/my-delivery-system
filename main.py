@@ -3,9 +3,10 @@ from db_manager.postgresql_helper import PostgreSQLHelper
 from db_manager.mongodb_helper import MongoDBHelper
 from modules.customer_module import CustomerModule
 from modules.driver_module import DriverModule
-from modules.order_module import Order_Module
+from modules.ordermodule import OrderModule
 from modules.ride_module import RideModule
 from modules.payment_module import PaymentModule
+from myenums.data_type import DataTypeEnum
 
 
 def display_main_menu():
@@ -63,37 +64,39 @@ def display_payment_menu():
 
 def main():
     db_type = os.getenv("DB_TYPE")
+    try:
+        db_type = DataTypeEnum(db_type)
+        print(f"Using database type: {db_type.name} ({db_type.value})")
+    except ValueError:
+        print(f"Invalid DB_TYPE: {db_type}. Please set a valid DB_TYPE.")
 
     # Initialize the appropriate database helper based on the environment variable
     if db_type == 'POSTGRES':
-        postgres_helper = PostgreSQLHelper(
+        db_helper= PostgreSQLHelper(
             os.getenv('POSTGRES_HOST'),
             os.getenv('POSTGRES_DATABASE'),
             os.getenv('POSTGRES_USERNAME'),
             os.getenv('POSTGRES_PASSWORD')
         )
 
-        # Initialize modules with the DB helper
-        customer_module = CustomerModule(postgres_helper)
-        driver_module = DriverModule(postgres_helper)
-        order_module = Order_Module(postgres_helper)
-        ride_module = RideModule(postgres_helper)
-        payment_module = PaymentModule(postgres_helper)
 
-    elif db_type == 'MONGO':
-        mongo_helper = MongoDBHelper(
+    elif db_type == 'MONGODB':
+        db_helper = MongoDBHelper(
             os.getenv('MONGO_HOST'),
             int(os.getenv('MONGO_PORT')),
             os.getenv('MONGO_DATABASE')
         )
-        customer_module = CustomerModule(mongo_helper)
-        driver_module = DriverModule(mongo_helper)
-        order_module = Order_Module(mongo_helper)
-        ride_module = RideModule(mongo_helper)
-        payment_module = PaymentModule(mongo_helper)
 
     else:
         raise ValueError("Unsupported DB Type")
+
+    # Initialize modules with the DB helper
+    customer_module = CustomerModule()
+    driver_module = DriverModule(db_helper)
+    order_module = OrderModule(db_helper)
+    ride_module = RideModule(db_helper)
+    payment_module = PaymentModule(db_helper)
+
 
     while True:
         # Show the main menu
@@ -110,23 +113,23 @@ def main():
                     name = input("Enter name: ")
                     phone = input("Enter phone: ")
                     address = input("Enter address: ")
-                    customer_module.add(name, phone, address)
+                    customer_module.add(db_helper,name, phone, address)
                 elif customer_choice == "2":
                     name = input("Enter name: ")
                     phone = input("Enter phone: ")
                     address = input("Enter address: ")
-                    customer_module.update_info( name, phone, address)
+                    customer_module.update_info( db_helper,name, phone, address)
                 elif customer_choice == "3":
                     phone = input("Enter phone number: ")
-                    customer_info = customer_module.get_info(phone)
+                    customer_info = customer_module.get_info(db_helper,phone)
                     print(customer_info)
                 elif customer_choice == "4":
-                    customer_id = input("Enter customer ID: ")
-                    orders = customer_module.get_customer_orders(customer_id)
+                    customer_phone = input("Enter customer phone: ")
+                    orders = customer_module.get_customer_orders(db_helper, customer_phone)
                     print(orders)
                 elif customer_choice == "5":
-                    customer_id = input("Enter customer ID: ")
-                    rides = customer_module.get_customer_rides(customer_id)
+                    customer_phone = input("Enter customer phone: ")
+                    rides = customer_module.get_customer_rides(db_helper, customer_phone)
                     print(rides)
                 elif customer_choice == "6":
                     break  # Return to the Main Menu

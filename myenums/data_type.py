@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Data_Type (Enum):
+class DataTypeEnum (Enum):
     POSTGRE = "POSTGRE"
     MONGODB = "MONGODB"
 

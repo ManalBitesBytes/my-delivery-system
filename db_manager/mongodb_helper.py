@@ -1,7 +1,8 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
+from utils.slack_helper import SlackHelper
 
-class MongoDBHelper():
+class MongoDBHelper:
     def __init__(self, host, port, database):
         self.host = host
         self.port = port
@@ -12,10 +13,15 @@ class MongoDBHelper():
     def connect_to_db(self):
         """Establish a connection to the MongoDB database."""
         try:
-            return MongoClient(self.host, self.port)
             print("Connected to MongoDB")
+            return MongoClient(self.host, self.port)
+
+
         except ConnectionFailure:
-            print("Could not connect to MongoDB")
+            msg =  "Could not connect to MongoDB"
+            print(msg)
+            slack_helper = SlackHelper()
+            slack_helper.send_slack_notification(msg)
 
     def insert(self, collection_name, data):
         """Insert a document into the specified MongoDB collection."""

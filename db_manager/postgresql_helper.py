@@ -1,4 +1,6 @@
 import psycopg2
+from utils.slack_helper import SlackHelper
+
 
 class PostgreSQLHelper():
     def __init__(self, host, database, user, password):
@@ -22,7 +24,10 @@ class PostgreSQLHelper():
                 print("Connected to PostgreSQL database")
            return conn
         except psycopg2.OperationalError:
-          print("Error connecting to PostgreSQL database")
+          msg = "Error connecting to PostgreSQL database"
+          print(msg)
+          slack_helper = SlackHelper()
+          slack_helper.send_slack_notification(msg)
 
 
     def get(self, query, params=None):

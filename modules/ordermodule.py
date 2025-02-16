@@ -1,7 +1,7 @@
 from repositories.order_repo import OrderRepo
 
 
-class Order_Module():
+class OrderModule():
     def __init__(self, db_helper):
         self.order_repo = OrderRepo(db_helper)
 
